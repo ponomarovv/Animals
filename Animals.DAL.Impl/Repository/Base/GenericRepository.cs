@@ -1,5 +1,6 @@
 ﻿using Animals.DAL.Abstract.Repository.Base;
 using Animals.DAL.Impl.Context;
+using Animals.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace StoreCS.DAL.Impl.Repository.Base;
@@ -58,5 +59,10 @@ public abstract class GenericRepository<TKey, TEntity> : IGenericRepository<TKey
     {
         TEntity item = await DbSet.FindAsync(key);
         return item;
+    }
+    
+    public IQueryable<TEntity> GetAllQueryable()
+    {
+        return (IQueryable<TEntity>)DbSet.AsQueryable();
     }
 }

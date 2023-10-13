@@ -11,7 +11,6 @@ builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
 builder.Configuration.AddUserSecrets<Program>();
 
 var connectionString = builder.Configuration.GetConnectionString("AnimalsDefaultConnection");
-// var connectionString = builder.Configuration.GetConnectionString("AnimalsUnitTestsConnection");
 
 builder.Services.AddDbContext<AnimalsContext>(
     options => options.UseSqlServer(connectionString));

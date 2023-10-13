@@ -13,4 +13,6 @@ public class DogRepository : GenericRepository<int, Dog>, IDogRepository
     {
         _dbContext = dbContext;
     }
+    
+
 }
