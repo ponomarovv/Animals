@@ -21,6 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Animals.BLL.Impl\Animals.BLL.Impl.csproj" />
     <ProjectReference Include="..\Animals.DAL.Impl\Animals.DAL.Impl.csproj" />
   </ItemGroup>
 
