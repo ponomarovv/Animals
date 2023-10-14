@@ -33,7 +33,6 @@ public class DogControllerTests
     }
 
 
-
     [Fact]
     public async Task GetAll_ShouldReturnOkWhenNoDogsInDatabase()
     {
@@ -78,23 +77,49 @@ public class DogControllerTests
     public async Task AddDog_ShouldReturnOkForValidData()
     {
         // Arrange
-        var createDogDto = new CreateDogDto { Name = "NewDog" };
+        var createDogDto = new CreateDogDto
+        {
+            Name = "NewDog",
+            Color = "Yellow", // Set the color property
+            Weight = 30, // Set the weight property
+            TailLength = 1
+        };
+
         var dogServiceMock = new Mock<IDogService>();
         dogServiceMock.Setup(s => s.GetAllAsync()).ReturnsAsync(new List<DogModel>());
         dogServiceMock.Setup(s => s.CreateAsync(It.IsAny<DogModel>()))
-            .ReturnsAsync(new DogModel { Id = 1, Name = "NewDog" });
+            .ReturnsAsync(new DogModel
+            {
+                Id = 1,
+                Name = "NewDog",
+                Color = "Yellow", // Set the color property
+                Weight = 30, // Set the weight property
+                TailLength = 1
+            });
+
         var mapperMock = new Mock<IMapper>();
         mapperMock.Setup(m => m.Map<DogModel>(It.IsAny<CreateDogDto>()))
-            .Returns(new DogModel { Id = 1, Name = "NewDog" });
+            .Returns(new DogModel
+            {
+                Id = 1,
+                Name = "NewDog",
+                Color = "Yellow", // Set the color property
+                Weight = 30, // Set the weight property
+                TailLength = 1
+            });
+
         var controller = new DogController(dogServiceMock.Object, mapperMock.Object);
 
         // Act
         var result = await controller.AddDog(createDogDto);
 
         // Assert
-
         var okResult = (OkObjectResult)result.Result;
         var dogModel = (DogModel)okResult.Value;
         Assert.Equal(1, dogModel.Id);
+        Assert.Equal("NewDog", dogModel.Name);
+        Assert.Equal("Yellow", dogModel.Color); // Assert color
+        Assert.Equal(30, dogModel.Weight); // Assert weight
+        Assert.Equal(1, dogModel.TailLength); // Assert weight
     }
 }

@@ -27,6 +27,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Animals.BLL.Impl.Tests", "A
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Animals.API.Tests", "Animals.API.Tests\Animals.API.Tests.csproj", "{E794494E-CAB4-47DF-B961-A1AD3E0662FE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Animals.Dtos.Tests", "Animals.Dtos.Tests\Animals.Dtos.Tests.csproj", "{5E51D55D-D82E-4385-9DCE-5CCFD4C425A6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -77,6 +79,10 @@ Global
 		{E794494E-CAB4-47DF-B961-A1AD3E0662FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E794494E-CAB4-47DF-B961-A1AD3E0662FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E794494E-CAB4-47DF-B961-A1AD3E0662FE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5E51D55D-D82E-4385-9DCE-5CCFD4C425A6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5E51D55D-D82E-4385-9DCE-5CCFD4C425A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5E51D55D-D82E-4385-9DCE-5CCFD4C425A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5E51D55D-D82E-4385-9DCE-5CCFD4C425A6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -88,5 +94,6 @@ Global
 		{893BF929-CBE7-47B2-BD5D-2137578769DD} = {416F1051-1E70-438C-AEE3-C7DFE683E318}
 		{E8879961-563E-44D4-8DDB-DC11899206FF} = {416F1051-1E70-438C-AEE3-C7DFE683E318}
 		{E794494E-CAB4-47DF-B961-A1AD3E0662FE} = {416F1051-1E70-438C-AEE3-C7DFE683E318}
+		{5E51D55D-D82E-4385-9DCE-5CCFD4C425A6} = {416F1051-1E70-438C-AEE3-C7DFE683E318}
 	EndGlobalSection
 EndGlobal
