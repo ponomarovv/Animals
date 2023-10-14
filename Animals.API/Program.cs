@@ -1,8 +1,5 @@
-
-using System.Reflection;
 using Animals.DAL.Impl;
 using Animals.DAL.Impl.Context;
-using Animals.Entities;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);

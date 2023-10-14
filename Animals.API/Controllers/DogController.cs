@@ -1,5 +1,4 @@
-﻿using System.Reflection;
-using Animals.BLL.Impl;
+﻿using Animals.API.Dtos;
 using Animals.BLL.Impl.Services;
 using Animals.DAL.Abstract.Repository.Base;
 using Animals.Entities;
@@ -26,31 +25,16 @@ public class DogController : ControllerBase
         return Ok(result);
     }
 
-    // [HttpGet("/dogs")]
-    // public async Task<ActionResult<List<Dog>>> GetAll(string? attribute, string? order, int? pageNumber, int? pageSize)
-    // {
-    //
-    //     // DogService.SortDogs();
-    //     var result = await _uow.DogRepository.GetAllAsync(x => true);
-    //     
-    //     if (result.Count == 0) return BadRequest("There are no dogs in database");
-    //     
-    //     // result = result.OrderBy(x => x.Name).ToList();
-    //     result = result.OrderBy(x=>x.TailLength).ToList();
-    //     
-    //     return Ok(result);
-    // }
-
     [HttpGet("/dogs")]
     public async Task<ActionResult<List<Dog>>> GetAll(string? attribute, int? pageNumber, int? pageSize,
         bool? isAscendingOrder = true)
     {
         List<Dog> result = new();
-        
-        
+
+
         try
         {
-           result = await _uow.DogRepository.GetAllAsync(x => true);
+            result = await _uow.DogRepository.GetAllAsync(x => true);
 
             if (result.Count == 0) return Ok("There are no dogs in database");
 
@@ -70,9 +54,44 @@ public class DogController : ControllerBase
         }
     }
 
-    // post method should be near
+    /// <summary>
+    /// POST method to add a new dog
+    /// </summary>
+    /// <param name="createDogDto">Dog object which will be added to the DB</param>
+    /// <returns>Returns dog as a new added object</returns>
+    [HttpPost("/dogs")]
+    public async Task<ActionResult<Dog>> AddDog([FromBody] CreateDogDto createDogDto)
+    {
+        if (createDogDto == null)
+        {
+            return BadRequest("Invalid dog data");
+        }
 
-    //
-    // here
-    //
+        try
+        {
+            // check if we have the dog with same name in the db. it is a task requirement.
+            var dogs = await _uow.DogRepository.GetAllAsync(x => true);
+
+            var exist = dogs.Any(x => x.Name == createDogDto.Name);
+            if (exist) return BadRequest("Dog with the same name already exists in DB.");
+            
+            
+            // todo insert mapper here.
+            // Map the CreateDogDto to the Dog entity if needed
+            var dog = new Dog()
+            {
+                Name = createDogDto.Name,
+                Color = createDogDto.Color,
+                TailLength = createDogDto.TailLength,
+                Weight = createDogDto.Weight
+            };
+
+            var addedDog = await _uow.DogRepository.AddAsync(dog);
+            return Ok(addedDog);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, $"An error occurred: {ex.Message}");
+        }
+    }
 }
