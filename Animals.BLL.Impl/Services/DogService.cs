@@ -2,41 +2,40 @@
 using Animals.BLL.Abstract.Services;
 using Animals.Entities;
 
-namespace Animals.BLL.Impl;
+namespace Animals.BLL.Impl.Services;
 
 public class DogService : IDogService
 {
-    public static List<Dog> SortDogs(List<Dog> dogs, string attribute, string order)
+    public static List<Dog> SortDogs(List<Dog> dogs, string? attribute, bool? isAscendingOrder = true)
     {
-        if (string.IsNullOrWhiteSpace(attribute) || string.IsNullOrWhiteSpace(order))
+        PropertyInfo? propertyInfo;
+
+        if (string.IsNullOrEmpty(attribute))
         {
-            // Handle invalid input
-            throw new ArgumentException("Attribute and order must be provided.");
+            propertyInfo = typeof(Dog).GetProperty("Id",
+                BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
+        }
+        else
+        {
+            propertyInfo = typeof(Dog).GetProperty(attribute,
+                BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
         }
 
-        var propertyInfo = typeof(Dog).GetProperty(attribute, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
-
-        if (propertyInfo == null)
-        {
-            // Handle non-existing property
-            // todo return it as action result. badrequest: there is not such property
-            throw new ArgumentException($"Property '{attribute}' does not exist on Dog.");
-        }
-
-        var sortedDogs = order.Equals("desc", StringComparison.OrdinalIgnoreCase)
-            ? dogs.OrderByDescending(dog => propertyInfo.GetValue(dog, null)).ToList()
-            : dogs.OrderBy(dog => propertyInfo.GetValue(dog, null)).ToList();
+        var sortedDogs = isAscendingOrder == true
+            ? dogs.OrderBy(dog => propertyInfo.GetValue(dog, null)).ToList()
+            : dogs.OrderByDescending(dog => propertyInfo.GetValue(dog, null)).ToList();
 
         return sortedDogs;
     }
 
     public static List<Dog> Pagination(List<Dog> dogs, int? pageNumber, int? pageSize)
     {
+        List<Dog> result = new();
         if (pageNumber.HasValue && pageSize.HasValue)
         {
-            dogs = dogs.Skip((pageNumber.Value - 1) * pageSize.Value).Take(pageSize.Value).ToList();
+            result = dogs.Skip((pageNumber.Value - 1) * pageSize.Value).Take(pageSize.Value).ToList();
         }
 
-        return dogs;
+        return result;
     }
 }

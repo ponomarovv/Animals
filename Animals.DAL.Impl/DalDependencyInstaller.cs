@@ -1,8 +1,8 @@
 ﻿using Animals.DAL.Abstract.Repository;
 using Animals.DAL.Abstract.Repository.Base;
 using Animals.DAL.Impl.Repository;
+using Animals.DAL.Impl.Repository.Base;
 using Microsoft.Extensions.DependencyInjection;
-using StoreCS.DAL.Impl.Repository.Base;
 
 namespace Animals.DAL.Impl;
 

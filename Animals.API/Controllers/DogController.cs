@@ -1,4 +1,6 @@
-﻿using Animals.BLL.Impl;
+﻿using System.Reflection;
+using Animals.BLL.Impl;
+using Animals.BLL.Impl.Services;
 using Animals.DAL.Abstract.Repository.Base;
 using Animals.Entities;
 using Microsoft.AspNetCore.Mvc;
@@ -40,26 +42,27 @@ public class DogController : ControllerBase
     // }
 
     [HttpGet("/dogs")]
-    public async Task<ActionResult<List<Dog>>> GetAll(string? attribute, string? order, int? pageNumber, int? pageSize)
+    public async Task<ActionResult<List<Dog>>> GetAll(string? attribute, int? pageNumber, int? pageSize,
+        bool? isAscendingOrder = true)
     {
         try
         {
             var result = await _uow.DogRepository.GetAllAsync(x => true);
-
-            if (result.Count == 0) return BadRequest("There are no dogs in database");
-
-
-            if (!string.IsNullOrWhiteSpace(attribute) && !string.IsNullOrWhiteSpace(order))
+    
+            if (result.Count == 0) return Ok("There are no dogs in database");
+    
+    
+            // if (attribute!=null)
             {
-                result = DogService.SortDogs(result, attribute, order);
+                result = DogService.SortDogs(result, attribute, isAscendingOrder);
             }
-
+    
             if (pageNumber.HasValue && pageSize.HasValue)
             {
                 result = DogService.Pagination(result, pageNumber, pageSize);
             }
-
-
+    
+    
             return Ok(result);
         }
         catch (Exception ex)
@@ -67,4 +70,13 @@ public class DogController : ControllerBase
             return StatusCode(StatusCodes.Status500InternalServerError, $"An error occurred: {ex.Message}");
         }
     }
+
+    // post method should be near
+
+    //
+    // here
+    //
+
+
+
 }

@@ -1,9 +1,8 @@
 ﻿using Animals.DAL.Abstract.Repository.Base;
 using Animals.DAL.Impl.Context;
-using Animals.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace StoreCS.DAL.Impl.Repository.Base;
+namespace Animals.DAL.Impl.Repository.Base;
 
 public abstract class GenericRepository<TKey, TEntity> : IGenericRepository<TKey, TEntity> where TEntity : class
 {
