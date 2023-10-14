@@ -47,6 +47,7 @@ public class DogController : ControllerBase
     {
         List<Dog> result = new();
         
+        
         try
         {
            result = await _uow.DogRepository.GetAllAsync(x => true);
