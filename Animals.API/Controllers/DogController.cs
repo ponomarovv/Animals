@@ -45,24 +45,22 @@ public class DogController : ControllerBase
     public async Task<ActionResult<List<Dog>>> GetAll(string? attribute, int? pageNumber, int? pageSize,
         bool? isAscendingOrder = true)
     {
+        List<Dog> result = new();
+        
         try
         {
-            var result = await _uow.DogRepository.GetAllAsync(x => true);
-    
+           result = await _uow.DogRepository.GetAllAsync(x => true);
+
             if (result.Count == 0) return Ok("There are no dogs in database");
-    
-    
-            // if (attribute!=null)
-            {
-                result = DogService.SortDogs(result, attribute, isAscendingOrder);
-            }
-    
+
+            result = DogService.SortDogs(result, attribute, isAscendingOrder);
+
             if (pageNumber.HasValue && pageSize.HasValue)
             {
                 result = DogService.Pagination(result, pageNumber, pageSize);
             }
-    
-    
+
+
             return Ok(result);
         }
         catch (Exception ex)
@@ -76,7 +74,4 @@ public class DogController : ControllerBase
     //
     // here
     //
-
-
-
 }
