@@ -31,7 +31,6 @@ public class DogController : ControllerBase
     {
         List<Dog> result = new();
 
-
         try
         {
             result = await _uow.DogRepository.GetAllAsync(x => true);
@@ -77,7 +76,7 @@ public class DogController : ControllerBase
             
             
             // todo insert mapper here.
-            // Map the CreateDogDto to the Dog entity if needed
+            
             var dog = new Dog()
             {
                 Name = createDogDto.Name,

@@ -31,7 +31,7 @@ public static class DataSeeder
     {
         var dog1 = new Dog { Name = "Neo", Color = "red and amber", TailLength = 22, Weight = 32 };
         var dog2 = new Dog { Name = "Jessy", Color = "black & white", TailLength = 7, Weight = 14 };
-        var dog3 = new Dog { Name = "ThirdName", Color = "yellow", TailLength = 3, Weight = 33 };
+        var dog3 = new Dog { Name = "ThirdName", Color = "yellow", TailLength = 3, Weight = 20 };
 
         dbContext.AddRange(dog1, dog2, dog3);
         

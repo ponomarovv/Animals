@@ -26,8 +26,4 @@
     <ProjectReference Include="..\Animals.DAL.Impl\Animals.DAL.Impl.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="RateLimiting\" />
-  </ItemGroup>
-
 </Project>

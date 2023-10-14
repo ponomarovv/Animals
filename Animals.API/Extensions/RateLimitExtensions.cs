@@ -1,29 +1,27 @@
-﻿using AspNetCoreRateLimit;
+﻿using Animals.API.RateLimiting;
+using AspNetCoreRateLimit;
+using RateLimitRule = AspNetCoreRateLimit.RateLimitRule;
 
 namespace Animals.API.Extensions;
 
 public static class RateLimitExtensions
 {
-    public static IServiceCollection AddRateLimitHandler(this IServiceCollection serviceCollection)
+    public static IServiceCollection AddRateLimitHandler(this IServiceCollection serviceCollection, IConfiguration configuration)
     {
+        
+        var rateLimitingOptions = configuration.GetSection("RateLimiting").Get<RateLimitingOptions>();
+        
         serviceCollection.AddMemoryCache();
         serviceCollection.Configure<IpRateLimitOptions>(options =>
         {
-            options.EnableEndpointRateLimiting = true;
-            options.StackBlockedRequests = false;
-            options.HttpStatusCode = 429;
-            options.RealIpHeader = "X-Real-IP";
-            options.ClientIdHeader = "X-ClientId";
-            options.GeneralRules = new List<RateLimitRule>
-            {
-                new RateLimitRule
-                {
-                    Endpoint = "*",
-                    Period = "10s",
-                    Limit = 2,
-                }
-            };
+            options.EnableEndpointRateLimiting = rateLimitingOptions.EnableEndpointRateLimiting;
+            options.StackBlockedRequests = rateLimitingOptions.StackBlockedRequests;
+            options.HttpStatusCode = rateLimitingOptions.HttpStatusCode;
+            options.RealIpHeader = rateLimitingOptions.RealIpHeader;
+            options.ClientIdHeader = rateLimitingOptions.ClientIdHeader;
+            options.GeneralRules = rateLimitingOptions.GeneralRules;
         });
+
         serviceCollection.AddSingleton<IIpPolicyStore, MemoryCacheIpPolicyStore>();
         serviceCollection.AddSingleton<IRateLimitCounterStore, MemoryCacheRateLimitCounterStore>();
         serviceCollection.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();

@@ -29,7 +29,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 
-builder.Services.AddRateLimitHandler();
+builder.Services.AddRateLimitHandler(builder.Configuration);
 
 var app = builder.Build();
 
