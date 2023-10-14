@@ -1,4 +1,6 @@
-﻿namespace Animals.Entities;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Animals.Entities;
 
 public class Dog
 {
@@ -6,6 +8,9 @@ public class Dog
 
     public string? Name { get; set; } = string.Empty;
     public string? Color { get; set; } = string.Empty;
-    public int? TailLength { get; set; } 
+    
+    [Range(0, int.MaxValue)]
+    public int? TailLength { get; set; }
+    [Range(0, int.MaxValue)]
     public int? Weight { get; set; }
 }
