@@ -1,8 +1,5 @@
 ﻿using Animals.BLL.Abstract.Services;
-using Animals.BLL.Impl.Services;
-using Animals.DAL.Abstract.Repository.Base;
 using Animals.Dtos;
-using Animals.Entities;
 using Animals.Models;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;

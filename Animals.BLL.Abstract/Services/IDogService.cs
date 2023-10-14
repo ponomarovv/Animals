@@ -1,5 +1,4 @@
 ﻿using Animals.BLL.Abstract.Services.Base;
-using Animals.Entities;
 using Animals.Models;
 
 namespace Animals.BLL.Abstract.Services;
