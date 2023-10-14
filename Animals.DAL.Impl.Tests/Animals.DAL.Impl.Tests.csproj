@@ -12,6 +12,7 @@
     <ItemGroup>
         <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.12" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.5.0"/>
+        <PackageReference Include="Moq" Version="4.20.69" />
         <PackageReference Include="xunit" Version="2.4.2"/>
         <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5">
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -24,12 +25,17 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Repository\Base\" />
+      <ProjectReference Include="..\Animals.DAL.Abstract\Animals.DAL.Abstract.csproj" />
+      <ProjectReference Include="..\Animals.DAL.Impl\Animals.DAL.Impl.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Animals.DAL.Abstract\Animals.DAL.Abstract.csproj" />
-      <ProjectReference Include="..\Animals.DAL.Impl\Animals.DAL.Impl.csproj" />
+      <Reference Include="Microsoft.AspNetCore">
+        <HintPath>C:\Program Files\dotnet\shared\Microsoft.AspNetCore.App\6.0.22\Microsoft.AspNetCore.dll</HintPath>
+      </Reference>
+      <Reference Include="Microsoft.Extensions.Configuration">
+        <HintPath>C:\Program Files\dotnet\shared\Microsoft.AspNetCore.App\6.0.22\Microsoft.Extensions.Configuration.dll</HintPath>
+      </Reference>
     </ItemGroup>
 
 </Project>

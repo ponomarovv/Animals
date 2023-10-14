@@ -1,18 +1,19 @@
 ﻿using Animals.DAL.Abstract.Repository;
+using Animals.DAL.Abstract.Repository.Base;
 using Animals.DAL.Impl.Context;
 using Animals.DAL.Impl.Repository;
+using Animals.DAL.Impl.Repository.Base;
 using Animals.Entities;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 
-namespace Animals.DAL.Impl.Tests;
+namespace Animals.DAL.Impl.Tests.Base;
 
-public class DogRepositoryTests
+public class GenericRepositoryTests
 {
     private readonly AnimalsContext _context; // Use your test database context.
-    private readonly IDogRepository _dogRepository;
+    private readonly IGenericRepository<int, Dog> _repository;
 
-    public DogRepositoryTests()
+    public GenericRepositoryTests()
     {
         // Get the connection string from the secrets configuration
         var connectionString =
@@ -23,10 +24,12 @@ public class DogRepositoryTests
             .Options;
 
         _context = new AnimalsContext(options);
-        _dogRepository = new DogRepository(_context);
-
+        _repository = new DogRepository(_context);
+        
         _context.Database.EnsureDeleted();
         _context.Database.EnsureCreated();
+
+   
 
         var dog1 = new Dog { Name = "Neo", Color = "red and amber", TailLength = 22, Weight = 32 };
         var dog2 = new Dog { Name = "Jessy", Color = "black & white", TailLength = 7, Weight = 14 };
@@ -42,15 +45,15 @@ public class DogRepositoryTests
         // Dispose of the test context after the tests are done.
         _context.Dispose();
     }
-
+    
     [Fact]
-    public async void AddDogAsync_ShouldAddDogToDatabase()
+    public async Task AddAsync_ShouldAddEntityToDatabase()
     {
         // Arrange
         var dog = new Dog { Name = "TestDog", Color = "Brown", TailLength = 15, Weight = 20 };
 
         // Act
-        var addedDog = await _dogRepository.AddAsync(dog);
+        var addedDog = await _repository.AddAsync(dog);
 
         // Assert
         Assert.NotNull(addedDog);
@@ -58,85 +61,70 @@ public class DogRepositoryTests
     }
 
     [Fact]
-    public async void GetDogByIdAsync_ShouldRetrieveDogFromDatabase()
+    public async Task GetByIdAsync_ShouldRetrieveEntityFromDatabase()
     {
         // Arrange
         var dog = new Dog { Name = "TestDog", Color = "Brown", TailLength = 15, Weight = 20 };
-        var addedDog = await _dogRepository.AddAsync(dog);
+        var addedDog = await _repository.AddAsync(dog);
 
         // Act
-        var retrievedDog = await _dogRepository.GetByIdAsync(addedDog.Id);
+        var retrievedDog = await _repository.GetByIdAsync(addedDog.Id);
 
         // Assert
         Assert.NotNull(retrievedDog);
         Assert.Equal(addedDog.Id, retrievedDog.Id);
         Assert.Equal(dog.Name, retrievedDog.Name);
-        // Add more assertions for other properties
     }
-
+    
     [Fact]
-    public async void DeleteDogAsync_ShouldRemoveDogFromDatabase()
+    public async Task DeleteAsync_ShouldRemoveEntityFromDatabase()
     {
         // Arrange
-        var dog = new Dog { Name = "TestDog", Color = "Brown", TailLength = 15, Weight = 20 };
-        var addedDog = await _dogRepository.AddAsync(dog);
+        var dog = await _repository.GetByIdAsync(1);
 
         // Act
-        var result = await _dogRepository.DeleteAsync(addedDog.Id);
+        var result = await _repository.DeleteAsync(dog.Id);
 
         // Assert
         Assert.True(result);
 
         // Ensure that the dog is removed from the database
-        var retrievedDog = await _dogRepository.GetByIdAsync(addedDog.Id);
+        var retrievedDog = await _repository.GetByIdAsync(dog.Id);
         Assert.Null(retrievedDog);
     }
 
     [Fact]
-    public async void UpdateDogAsync_ShouldUpdateDogInDatabase()
+    public async Task UpdateAsync_ShouldUpdateEntityInDatabase()
     {
         // Arrange
-        var dog = new Dog { Name = "TestDog", Color = "Brown", TailLength = 15, Weight = 20 };
-        var addedDog = await _dogRepository.AddAsync(dog);
-
-        // Update the dog's properties
-        addedDog.Name = "UpdatedDog";
-        addedDog.Color = "Black";
+        var dog = await _repository.GetByIdAsync(1);
+        dog.Name = "UpdatedDog";
+        dog.Color = "Black";
 
         // Act
-        var result = await _dogRepository.UpdateAsync(addedDog);
+        var result = await _repository.UpdateAsync(dog);
 
         // Assert
         Assert.True(result);
 
         // Retrieve the dog from the database and check if it's updated
-        var retrievedDog = await _dogRepository.GetByIdAsync(addedDog.Id);
+        var retrievedDog = await _repository.GetByIdAsync(dog.Id);
         Assert.NotNull(retrievedDog);
         Assert.Equal("UpdatedDog", retrievedDog.Name);
         Assert.Equal("Black", retrievedDog.Color);
-        // Add more assertions for other properties
     }
 
     [Fact]
-    public async void GetAllDogsAsync_ShouldRetrieveAllDogs()
+    public void GetAllQueryable_ShouldReturnQueryable()
     {
-        // Arrange
-        var dog1 = new Dog { Name = "Dog1", Color = "Brown", TailLength = 15, Weight = 20 };
-        var dog2 = new Dog { Name = "Dog2", Color = "Black", TailLength = 12, Weight = 18 };
-        var dog3 = new Dog { Name = "Dog3", Color = "White", TailLength = 18, Weight = 25 };
-
-        // Add dogs to the database
-        await _dogRepository.AddAsync(dog1);
-        await _dogRepository.AddAsync(dog2);
-        await _dogRepository.AddAsync(dog3);
-
         // Act
-        var dogs = await _dogRepository.GetAllAsync(d => d.Weight > 19);
+        var queryable = _repository.GetAllQueryable();
 
         // Assert
-        Assert.NotNull(dogs);
-        Assert.Equal(4, dogs.Count);
+        Assert.NotNull(queryable);
+        Assert.IsAssignableFrom<IQueryable<Dog>>(queryable);
     }
 }
+
 
 
