@@ -9,10 +9,3 @@ public class RateLimitingOptions
     public string ClientIdHeader { get; set; }
     public List<AspNetCoreRateLimit.RateLimitRule> GeneralRules { get; set; }
 }
-
-public class RateLimitRule
-{
-    public string Endpoint { get; set; }
-    public string Period { get; set; }
-    public int Limit { get; set; }
-}
