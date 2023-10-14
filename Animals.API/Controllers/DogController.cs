@@ -74,21 +74,11 @@ public class DogController : ControllerBase
         try
         {
             // check if we have the dog with same name in the db. it is a task requirement.
-            var dogs =  await _dogService.GetAllAsync();
+            var dogs = await _dogService.GetAllAsync();
 
             var exist = dogs.Any(x => x.Name == createDogDto.Name);
             if (exist) return BadRequest("Dog with the same name already exists in DB.");
-            
-            
-            // todo insert mapper here.
-            
-            // var dog = new DogModel()
-            // {
-            //     Name = createDogDto.Name,
-            //     Color = createDogDto.Color,
-            //     TailLength = createDogDto.TailLength,
-            //     Weight = createDogDto.Weight
-            // };
+
 
             DogModel? dog = _mapper.Map<DogModel>(createDogDto);
 
