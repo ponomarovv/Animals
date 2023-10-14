@@ -3,9 +3,8 @@ using Animals.DAL.Impl.Context;
 using Animals.DAL.Impl.Repository;
 using Animals.Entities;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 
-namespace Animals.DAL.Impl.Tests;
+namespace Animals.DAL.Impl.Tests.Repository;
 
 public class DogRepositoryTests
 {
@@ -16,7 +15,7 @@ public class DogRepositoryTests
     {
         // Get the connection string from the secrets configuration
         var connectionString =
-            "Server=(localdb)\\mssqllocaldb;Database=AnimalsDBUnitTests;Trusted_Connection=True;TrustServerCertificate=True; MultipleActiveResultSets=True;";
+            "Server=(localdb)\\mssqllocaldb;Database=AnimalsDBUnitTests1;Trusted_Connection=True;TrustServerCertificate=True; MultipleActiveResultSets=True;";
 
         var options = new DbContextOptionsBuilder<AnimalsContext>()
             .UseSqlServer(connectionString)
@@ -71,7 +70,6 @@ public class DogRepositoryTests
         Assert.NotNull(retrievedDog);
         Assert.Equal(addedDog.Id, retrievedDog.Id);
         Assert.Equal(dog.Name, retrievedDog.Name);
-        // Add more assertions for other properties
     }
 
     [Fact]
@@ -114,7 +112,6 @@ public class DogRepositoryTests
         Assert.NotNull(retrievedDog);
         Assert.Equal("UpdatedDog", retrievedDog.Name);
         Assert.Equal("Black", retrievedDog.Color);
-        // Add more assertions for other properties
     }
 
     [Fact]
@@ -138,5 +135,3 @@ public class DogRepositoryTests
         Assert.Equal(4, dogs.Count);
     }
 }
-
-

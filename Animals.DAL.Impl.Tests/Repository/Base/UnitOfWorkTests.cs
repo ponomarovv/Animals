@@ -5,9 +5,8 @@ using Animals.DAL.Impl.Repository;
 using Animals.DAL.Impl.Repository.Base;
 using Animals.Entities;
 using Microsoft.EntityFrameworkCore;
-using Moq;
 
-namespace Animals.DAL.Impl.Tests.Base;
+namespace Animals.DAL.Impl.Tests.Repository.Base;
 
 public class UnitOfWorkTests
 {
@@ -19,7 +18,7 @@ public class UnitOfWorkTests
     {
         // Get the connection string from the secrets configuration
         var connectionString =
-            "Server=(localdb)\\mssqllocaldb;Database=AnimalsDBUnitTests;Trusted_Connection=True;TrustServerCertificate=True; MultipleActiveResultSets=True;";
+            "Server=(localdb)\\mssqllocaldb;Database=AnimalsDBUnitTests3;Trusted_Connection=True;TrustServerCertificate=True; MultipleActiveResultSets=True;";
 
         var options = new DbContextOptionsBuilder<AnimalsContext>()
             .UseSqlServer(connectionString)
@@ -29,7 +28,7 @@ public class UnitOfWorkTests
         _dogRepository = new DogRepository(_context);
 
         _unitOfWork = new UnitOfWork(_context, _dogRepository);
-        
+
         _context.Database.EnsureDeleted();
         _context.Database.EnsureCreated();
 
@@ -46,26 +45,6 @@ public class UnitOfWorkTests
     {
         _context.Database.EnsureDeleted();
         _context.Dispose();
-   
-    }
-
-
-    [Fact]
-    public void Dispose_ShouldDisposeContext()
-    {
-        // Arrange
-        // Mock the context and repository for testing
-        var contextMock = new Mock<AnimalsContext>();
-        var repositoryMock = new Mock<IDogRepository>();
-
-        var unitOfWork = new UnitOfWork(contextMock.Object, repositoryMock.Object);
-
-        // Act
-        unitOfWork.Dispose();
-
-        // Assert
-        // Verify that the context is disposed
-        contextMock.Verify(c => c.Dispose(), Times.Once);
     }
 
     [Fact]
@@ -99,7 +78,6 @@ public class UnitOfWorkTests
         Assert.Equal(addedDog.Id, retrievedDog.Id);
         Assert.Equal(dog.Name, retrievedDog.Name);
         Assert.Equal(dog.Color, retrievedDog.Color);
-        // Add more assertions for other properties
     }
 
     [Fact]

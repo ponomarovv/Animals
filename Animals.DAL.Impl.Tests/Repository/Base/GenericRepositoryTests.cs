@@ -1,12 +1,10 @@
-﻿using Animals.DAL.Abstract.Repository;
-using Animals.DAL.Abstract.Repository.Base;
+﻿using Animals.DAL.Abstract.Repository.Base;
 using Animals.DAL.Impl.Context;
 using Animals.DAL.Impl.Repository;
-using Animals.DAL.Impl.Repository.Base;
 using Animals.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace Animals.DAL.Impl.Tests.Base;
+namespace Animals.DAL.Impl.Tests.Repository.Base;
 
 public class GenericRepositoryTests
 {
@@ -17,7 +15,7 @@ public class GenericRepositoryTests
     {
         // Get the connection string from the secrets configuration
         var connectionString =
-            "Server=(localdb)\\mssqllocaldb;Database=AnimalsDBUnitTests;Trusted_Connection=True;TrustServerCertificate=True; MultipleActiveResultSets=True;";
+            "Server=(localdb)\\mssqllocaldb;Database=AnimalsDBUnitTests2;Trusted_Connection=True;TrustServerCertificate=True; MultipleActiveResultSets=True;";
 
         var options = new DbContextOptionsBuilder<AnimalsContext>()
             .UseSqlServer(connectionString)
@@ -25,11 +23,10 @@ public class GenericRepositoryTests
 
         _context = new AnimalsContext(options);
         _repository = new DogRepository(_context);
-        
+
         _context.Database.EnsureDeleted();
         _context.Database.EnsureCreated();
 
-   
 
         var dog1 = new Dog { Name = "Neo", Color = "red and amber", TailLength = 22, Weight = 32 };
         var dog2 = new Dog { Name = "Jessy", Color = "black & white", TailLength = 7, Weight = 14 };
@@ -45,7 +42,7 @@ public class GenericRepositoryTests
         // Dispose of the test context after the tests are done.
         _context.Dispose();
     }
-    
+
     [Fact]
     public async Task AddAsync_ShouldAddEntityToDatabase()
     {
@@ -75,7 +72,7 @@ public class GenericRepositoryTests
         Assert.Equal(addedDog.Id, retrievedDog.Id);
         Assert.Equal(dog.Name, retrievedDog.Name);
     }
-    
+
     [Fact]
     public async Task DeleteAsync_ShouldRemoveEntityFromDatabase()
     {
@@ -125,6 +122,3 @@ public class GenericRepositoryTests
         Assert.IsAssignableFrom<IQueryable<Dog>>(queryable);
     }
 }
-
-
-

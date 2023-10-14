@@ -7,8 +7,6 @@ using AutoMapper;
 
 namespace Animals.BLL.Impl.Services;
 
-
-
 public class DogService : IDogService
 {
     private readonly IUnitOfWork _unitOfWork;
