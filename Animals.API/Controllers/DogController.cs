@@ -1,7 +1,10 @@
-﻿using Animals.API.Dtos;
+﻿using Animals.BLL.Abstract.Services;
 using Animals.BLL.Impl.Services;
 using Animals.DAL.Abstract.Repository.Base;
+using Animals.Dtos;
 using Animals.Entities;
+using Animals.Models;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Animals.API.Controllers;
@@ -10,11 +13,13 @@ namespace Animals.API.Controllers;
 [ApiController]
 public class DogController : ControllerBase
 {
-    private readonly IUnitOfWork _uow;
+    private readonly IDogService _dogService;
+    private readonly IMapper _mapper;
 
-    public DogController(IUnitOfWork uow)
+    public DogController(IDogService dogService, IMapper mapper)
     {
-        _uow = uow;
+        _dogService = dogService;
+        _mapper = mapper;
     }
 
 
@@ -26,22 +31,22 @@ public class DogController : ControllerBase
     }
 
     [HttpGet("/dogs")]
-    public async Task<ActionResult<List<Dog>>> GetAll(string? attribute, int? pageNumber, int? pageSize,
+    public async Task<ActionResult<List<DogModel>>> GetAll(string? attribute, int? pageNumber, int? pageSize,
         bool? isAscendingOrder = true)
     {
-        List<Dog> result = new();
+        List<DogModel> result = new();
 
         try
         {
-            result = await _uow.DogRepository.GetAllAsync(x => true);
+            result = await _dogService.GetAllAsync();
 
             if (result.Count == 0) return Ok("There are no dogs in database");
 
-            result = DogService.SortDogs(result, attribute, isAscendingOrder);
+            result = _dogService.SortDogs(result, attribute, isAscendingOrder);
 
             if (pageNumber.HasValue && pageSize.HasValue)
             {
-                result = DogService.Pagination(result, pageNumber, pageSize);
+                result = _dogService.Pagination(result, pageNumber, pageSize);
             }
 
 
@@ -59,7 +64,7 @@ public class DogController : ControllerBase
     /// <param name="createDogDto">Dog object which will be added to the DB</param>
     /// <returns>Returns dog as a new added object</returns>
     [HttpPost("/dogs")]
-    public async Task<ActionResult<Dog>> AddDog([FromBody] CreateDogDto createDogDto)
+    public async Task<ActionResult<DogModel>> AddDog([FromBody] CreateDogDto createDogDto)
     {
         if (createDogDto == null)
         {
@@ -69,7 +74,7 @@ public class DogController : ControllerBase
         try
         {
             // check if we have the dog with same name in the db. it is a task requirement.
-            var dogs = await _uow.DogRepository.GetAllAsync(x => true);
+            var dogs =  await _dogService.GetAllAsync();
 
             var exist = dogs.Any(x => x.Name == createDogDto.Name);
             if (exist) return BadRequest("Dog with the same name already exists in DB.");
@@ -77,15 +82,17 @@ public class DogController : ControllerBase
             
             // todo insert mapper here.
             
-            var dog = new Dog()
-            {
-                Name = createDogDto.Name,
-                Color = createDogDto.Color,
-                TailLength = createDogDto.TailLength,
-                Weight = createDogDto.Weight
-            };
+            // var dog = new DogModel()
+            // {
+            //     Name = createDogDto.Name,
+            //     Color = createDogDto.Color,
+            //     TailLength = createDogDto.TailLength,
+            //     Weight = createDogDto.Weight
+            // };
 
-            var addedDog = await _uow.DogRepository.AddAsync(dog);
+            DogModel? dog = _mapper.Map<DogModel>(createDogDto);
+
+            var addedDog = await _dogService.CreateAsync(dog);
             return Ok(addedDog);
         }
         catch (Exception ex)

@@ -6,9 +6,4 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
-    <ItemGroup>
-      <ProjectReference Include="..\Animals.Entities\Animals.Entities.csproj" />
-      <ProjectReference Include="..\Animals.Models\Animals.Models.csproj" />
-    </ItemGroup>
-
 </Project>

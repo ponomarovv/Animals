@@ -1,6 +1,5 @@
 ﻿using Animals.API.RateLimiting;
 using AspNetCoreRateLimit;
-using RateLimitRule = AspNetCoreRateLimit.RateLimitRule;
 
 namespace Animals.API.Extensions;
 

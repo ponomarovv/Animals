@@ -1,4 +1,5 @@
 using Animals.API.Extensions;
+using Animals.BLL.Impl;
 using Animals.DAL.Impl;
 using Animals.DAL.Impl.Context;
 using AspNetCoreRateLimit;
@@ -19,6 +20,9 @@ builder.Services.AddDbContext<AnimalsContext>(
 // Add services to the container.
 
 builder.Services.InstallRepositories();
+builder.Services.InstallMappers();
+builder.Services.InstallServices();
+
 builder.Services.SeedData();
 
 // Add services to the container.

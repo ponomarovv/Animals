@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Animals.API.Dtos;
+namespace Animals.Dtos;
 
 public class CreateDogDto
 

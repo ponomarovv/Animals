@@ -14,12 +14,8 @@ public static class DataSeeder
         // Check if the database exists, and if it does, don't recreate it
         if (!dbContext.Database.EnsureCreated())
         {
-            Console.WriteLine("db is already created");
-            
             return services;
         }
-
-        Console.WriteLine("db is creating now");
         
         // Seed data only if the database was just created
         SeedInitialData(dbContext);
