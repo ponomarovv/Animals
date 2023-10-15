@@ -5,6 +5,7 @@ using Animals.DAL.Impl.Repository;
 using Animals.DAL.Impl.Repository.Base;
 using Animals.Entities;
 using Microsoft.EntityFrameworkCore;
+using Moq;
 
 namespace Animals.DAL.Impl.Tests.Repository.Base;
 
@@ -13,6 +14,7 @@ public class UnitOfWorkTests
     private readonly AnimalsContext _context;
     private readonly IDogRepository _dogRepository;
     private readonly IUnitOfWork _unitOfWork;
+    private DbContextOptions<AnimalsContext> _options;
 
     public UnitOfWorkTests()
     {
@@ -20,11 +22,11 @@ public class UnitOfWorkTests
         var connectionString =
             "Server=(localdb)\\mssqllocaldb;Database=AnimalsDBUnitTests3;Trusted_Connection=True;TrustServerCertificate=True; MultipleActiveResultSets=True;";
 
-        var options = new DbContextOptionsBuilder<AnimalsContext>()
+        _options = new DbContextOptionsBuilder<AnimalsContext>()
             .UseSqlServer(connectionString)
             .Options;
 
-        _context = new AnimalsContext(options);
+        _context = new AnimalsContext(_options);
         _dogRepository = new DogRepository(_context);
 
         _unitOfWork = new UnitOfWork(_context, _dogRepository);

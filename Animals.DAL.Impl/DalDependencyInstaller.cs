@@ -12,8 +12,6 @@ public static class DalDependencyInstaller
     {
         services.AddScoped<IDogRepository, DogRepository>();
         
-        
         services.AddScoped<IUnitOfWork, UnitOfWork>();
-
     }
 }
