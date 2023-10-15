@@ -1,5 +1,7 @@
 ﻿using Animals.API.Controllers;
 using Animals.BLL.Abstract.Services;
+using Animals.DAL.Abstract.Repository;
+using Animals.DAL.Abstract.Repository.Base;
 using Animals.Dtos;
 using Animals.Models;
 using AutoMapper;
@@ -21,7 +23,7 @@ public class DogControllerTests
         var controller = new DogController(dogServiceMock.Object, mapperMock.Object);
 
         // Act
-        var result = controller.Ping() as ActionResult<string>;
+        var result = controller.Ping();
 
         // Assert
         Assert.NotNull(result);
@@ -121,5 +123,23 @@ public class DogControllerTests
         Assert.Equal("Yellow", dogModel.Color); // Assert color
         Assert.Equal(30, dogModel.Weight); // Assert weight
         Assert.Equal(1, dogModel.TailLength); // Assert weight
+    }
+
+    [Fact]
+    public async Task GetAll_NoDogsInDatabase_ReturnsOkResultWithMessage()
+    {
+        // Arrange
+        var dogServiceMock = new Mock<IDogService>();
+        dogServiceMock.Setup(s => s.GetAllAsync()).ReturnsAsync(new List<DogModel>());
+        var mapperMock = new Mock<IMapper>();
+        var controller = new DogController(dogServiceMock.Object, mapperMock.Object);
+
+        // Act
+        var result = await controller.GetAll(attribute: null, pageNumber: null, pageSize: null, isAscendingOrder: true);
+
+        // Assert
+        var okResult = Assert.IsType<OkObjectResult>(result.Result);
+        var message = Assert.IsType<string>(okResult.Value);
+        Assert.Equal("There are no dogs in database", message);
     }
 }

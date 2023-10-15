@@ -15,7 +15,7 @@ public class GenericRepositoryTests
     {
         // Get the connection string from the secrets configuration
         var connectionString =
-            "Server=(localdb)\\mssqllocaldb;Database=AnimalsDBUnitTests2;Trusted_Connection=True;TrustServerCertificate=True; MultipleActiveResultSets=True;";
+            "Server=(localdb)\\mssqllocaldb;Database=AnimalsDBUnitTests13;Trusted_Connection=True;TrustServerCertificate=True; MultipleActiveResultSets=True;";
 
         var options = new DbContextOptionsBuilder<AnimalsContext>()
             .UseSqlServer(connectionString)

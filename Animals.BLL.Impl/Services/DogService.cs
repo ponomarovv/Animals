@@ -86,9 +86,9 @@ public class DogService : IDogService
             ? dogs.OrderBy(dog => propertyInfo.GetValue(dog, null)).ToList()
             : dogs.OrderByDescending(dog => propertyInfo.GetValue(dog, null)).ToList();
 
-        var result = _mapper.Map<List<DogModel>>(sortedDogs);
+       
 
-        return result;
+        return sortedDogs;
     }
 
     public List<DogModel> Pagination(List<DogModel> dogs, int? pageNumber, int? pageSize)

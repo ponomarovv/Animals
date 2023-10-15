@@ -20,7 +20,7 @@ public class UnitOfWorkTests
     {
         // Get the connection string from the secrets configuration
         var connectionString =
-            "Server=(localdb)\\mssqllocaldb;Database=AnimalsDBUnitTests3;Trusted_Connection=True;TrustServerCertificate=True; MultipleActiveResultSets=True;";
+            "Server=(localdb)\\mssqllocaldb;Database=AnimalsDBUnitTests12;Trusted_Connection=True;TrustServerCertificate=True; MultipleActiveResultSets=True;";
 
         _options = new DbContextOptionsBuilder<AnimalsContext>()
             .UseSqlServer(connectionString)
