@@ -87,4 +87,5 @@ public class DogController : ControllerBase
             return StatusCode(StatusCodes.Status500InternalServerError, $"An error occurred: {ex.Message}");
         }
     }
+    
 }
