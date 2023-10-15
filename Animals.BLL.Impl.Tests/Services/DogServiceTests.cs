@@ -126,6 +126,24 @@ public class DogServiceTests
         // Verify that the mapper mapped the model to an entity
         unitOfWorkMock.Verify(u => u.DogRepository.UpdateAsync(It.Is<Dog>(d => d.Name == "UpdatedDog")));
     }
+    
+    [Fact]
+    public async Task UpdateAsync_ModelIsNull_ReturnsFalse()
+    {
+        // Arrange
+        var unitOfWorkMock = new Mock<IUnitOfWork>();
+        var mapperMock = new Mock<IMapper>();
+        var dogService = new DogService(unitOfWorkMock.Object, mapperMock.Object);
+        DogModel nullModel = null;
+
+        // Act
+        var result = await dogService.UpdateAsync(nullModel);
+
+        // Assert
+        Assert.False(result);
+        // You can also add additional assertions if needed
+    }
+
 
     [Fact]
     public async Task DeleteAsync_ShouldRemoveDogModel()
@@ -176,6 +194,33 @@ public class DogServiceTests
             item => Assert.Equal("Dog1", item.Name),
             item => Assert.Equal("Dog2", item.Name),
             item => Assert.Equal("Dog3", item.Name)
+        );
+    }
+    
+    [Fact]
+    public void SortDogs_ShouldSortDogsDescending()
+    {
+        // Arrange
+        // Create a mock IMapper
+        var mapper = CreateMockMapper();
+
+        var service = new DogService(null, mapper);
+        var dogs = new List<DogModel>
+        {
+            new DogModel { Id = 3, Name = "Dog1" },
+            new DogModel { Id = 1, Name = "Dog2" },
+            new DogModel { Id = 2, Name = "Dog3" }
+        };
+
+        // Act
+        var sortedDogs = service.SortDogs(dogs, "Name", false);
+
+        // Assert
+        Assert.NotNull(sortedDogs);
+        Assert.Collection(sortedDogs,
+            item => Assert.Equal("Dog3", item.Name),
+            item => Assert.Equal("Dog2", item.Name),
+            item => Assert.Equal("Dog1", item.Name)
         );
     }
 

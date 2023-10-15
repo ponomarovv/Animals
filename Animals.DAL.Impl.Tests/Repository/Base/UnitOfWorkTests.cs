@@ -5,7 +5,6 @@ using Animals.DAL.Impl.Repository;
 using Animals.DAL.Impl.Repository.Base;
 using Animals.Entities;
 using Microsoft.EntityFrameworkCore;
-using Moq;
 
 namespace Animals.DAL.Impl.Tests.Repository.Base;
 

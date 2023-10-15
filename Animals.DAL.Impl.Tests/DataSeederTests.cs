@@ -1,9 +1,4 @@
-﻿using Animals.DAL.Abstract.Repository;
-using Animals.DAL.Abstract.Repository.Base;
-using Animals.DAL.Impl.Context;
-using Animals.DAL.Impl.Repository;
-using Animals.DAL.Impl.Repository.Base;
-using Animals.Entities;
+﻿using Animals.DAL.Impl.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 

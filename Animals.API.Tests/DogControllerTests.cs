@@ -1,12 +1,8 @@
 ﻿using Animals.API.Controllers;
 using Animals.BLL.Abstract.Services;
 using Animals.BLL.Impl;
-using Animals.BLL.Impl.Services;
-using Animals.DAL.Abstract.Repository;
-using Animals.DAL.Abstract.Repository.Base;
 using Animals.DAL.Impl;
 using Animals.DAL.Impl.Context;
-using Animals.DAL.Impl.Repository;
 using Animals.Dtos;
 using Animals.Entities;
 using Animals.Models;
@@ -16,7 +12,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
-
 
 namespace Animals.API.Tests;
 
@@ -41,7 +36,6 @@ public class DogControllerTests
         Assert.Equal(200, okResult?.StatusCode);
         Assert.Equal("Dogshouseservice.Version1.0.1", okResult?.Value);
     }
-
 
     [Fact]
     public async Task GetAll_ShouldReturnOkWhenNoDogsInDatabase()
@@ -204,5 +198,129 @@ public class DogControllerTests
 
         // Assert
         Assert.Equal(expected, actualResult!.Count);
+    }
+    
+    [Fact]
+    public async Task GetAll_3DogsInDatabase_Returns3DogsWithPaginationPageSize1_PageNumber1()
+    {
+        // Arrange
+        var services = new ServiceCollection();
+
+        services.InstallRepositories();
+        services.InstallMappers();
+        services.InstallServices();
+
+        var connectionString =
+            "Server=(localdb)\\mssqllocaldb;Database=AnimalsDBUnitTests11;Trusted_Connection=True;TrustServerCertificate=True; MultipleActiveResultSets=True;";
+
+        var options = new DbContextOptionsBuilder<AnimalsContext>()
+            .UseSqlServer(connectionString)
+            .Options;
+
+        services.AddDbContext<AnimalsContext>(
+            options => options.UseSqlServer(connectionString));
+
+        var serviceProvider = services.BuildServiceProvider();
+
+        using var scope = serviceProvider.CreateScope();
+        var _context = scope.ServiceProvider.GetRequiredService<AnimalsContext>();
+
+
+        var dogService = serviceProvider.GetService<IDogService>();
+        var mapper = serviceProvider.GetService<IMapper>();
+
+        var dogController = new DogController(dogService, mapper);
+
+
+        _context.Database.EnsureDeleted();
+        _context.Database.EnsureCreated();
+
+        List<Dog> dogs = new()
+        {
+            new Dog { Name = "Neo", Color = "red and amber", TailLength = 22, Weight = 32 },
+            new Dog { Name = "Jessy", Color = "black & white", TailLength = 7, Weight = 14 },
+            new Dog { Name = "ThirdName", Color = "yellow", TailLength = 3, Weight = 20 }
+        };
+
+        _context.AddRange(dogs);
+        await _context.SaveChangesAsync();
+
+        var expected = 1;
+
+        // Act
+        var r = await dogController.GetAll(attribute: null, pageNumber: 1, pageSize: 1, isAscendingOrder: true);
+        var actualResult = (r.Result as OkObjectResult)?.Value as List<DogModel>;
+
+        // Assert
+        Assert.Equal(expected, actualResult!.Count);
+    }
+    
+    [Fact]
+    public async Task AddDog_WithNullDto_ReturnsBadRequest()
+    {
+        // Arrange
+        var dogController = CreateDogController();
+
+        // Act
+        var result = await dogController.AddDog(null);
+
+        // Assert
+        var badRequestResult = Assert.IsType<BadRequestObjectResult>(result.Result);
+        Assert.Equal("Invalid dog data", badRequestResult.Value);
+    }
+    
+    [Fact]
+    public async Task AddDog_WithDuplicateName_ReturnsBadRequest()
+    {
+        // Arrange
+        var dogServiceMock = new Mock<IDogService>();
+        var mapperMock = new Mock<IMapper>();
+        var dogController = new DogController(dogServiceMock.Object, mapperMock.Object);
+
+        // Mock behavior to simulate a dog with the same name already in the database
+        dogServiceMock.Setup(s => s.GetAllAsync()).ReturnsAsync(new List<DogModel>
+        {
+            new DogModel { Id = 1, Name = "Dog1" },
+            new DogModel { Id = 2, Name = "Dog2" }
+        });
+
+        // Create a duplicate dog DTO
+        var duplicateDogDto = new CreateDogDto { Name = "Dog1", /* Other properties */ };
+
+        // Act
+        var result = await dogController.AddDog(duplicateDogDto);
+
+        // Assert
+        var badRequestResult = Assert.IsType<BadRequestObjectResult>(result.Result);
+        Assert.Equal("Dog with the same name already exists in DB.", badRequestResult.Value);
+    }
+    
+    [Fact]
+    public async Task AddDog_WithException_Returns500InternalServerError()
+    {
+        // Arrange
+        var dogServiceMock = new Mock<IDogService>();
+        var mapperMock = new Mock<IMapper>();
+        var dogController = new DogController(dogServiceMock.Object, mapperMock.Object);
+
+        // Simulate an exception in the service
+        dogServiceMock.Setup(s => s.GetAllAsync()).ThrowsAsync(new Exception("Some error"));
+
+        // Act
+        var result = await dogController.AddDog(new CreateDogDto { Name = "NewDog", /* Other properties */ });
+
+        // Assert
+        var internalServerErrorResult = Assert.IsType<ObjectResult>(result.Result);
+        Assert.Equal(StatusCodes.Status500InternalServerError, internalServerErrorResult.StatusCode);
+        Assert.Equal("An error occurred: Some error", internalServerErrorResult.Value);
+    }
+
+    
+    private DogController CreateDogController()
+    {
+        var dogServiceMock = new Mock<IDogService>();
+        var mapperMock = new Mock<IMapper>();
+
+        return new DogController(dogServiceMock.Object, mapperMock.Object);
     }
 }

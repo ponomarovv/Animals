@@ -1,11 +1,8 @@
 ﻿using Animals.API.Extensions;
-using Animals.API.RateLimiting;
 using AspNetCoreRateLimit;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using Moq;
-using Xunit;
 
 namespace Animals.API.Tests.Extensions;
 
